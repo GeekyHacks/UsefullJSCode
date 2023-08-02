@@ -30,21 +30,45 @@ displayedValue = (value) => {
   document.getElementById('demo').innerHTML = value;
 };
 
-getFile = (myCallback) => {
+// getFile = (myCallback) => {
+//   let req = new XMLHttpRequest();
+//   req.open('GET', 'index.html');
+//   req.onload = () => {
+//     // 200 means that request is done and has been processed
+//     // this conditon is actullay the resolve condition
+//     if (req.status == 200) {
+//       myCallback(req.responseText);
+//     }
+//     // this conditon is actullay the reject
+//     else {
+//       myCallback(`Error: ${req.status}`);
+//     }
+//   };
+//   req.send();
+// };
+
+// getFile(displayedValue);
+
+// using promise
+let myPromise = new Promise((myResolve, myReject) => {
   let req = new XMLHttpRequest();
   req.open('GET', 'index.html');
-  req.onload = () => {
-    // 200 means that request is done and has been processed
-    // this conditon is actullay the resolve condition
+  req.onload = function () {
     if (req.status == 200) {
-      myCallback(req.responseText);
-    }
-    // this conditon is actullay the reject
-    else {
-      myCallback(`Error: ${req.status}`);
+      myResolve(req.response);
+    } else {
+      myReject('File not Found');
     }
   };
   req.send();
-};
+});
 
-getFile(displayedValue);
+myPromise.then(
+  function (value) {
+    displayedValue(value);
+  },
+  function (error) {
+    displayedValue(error);
+  }
+);
+
